@@ -1,10 +1,9 @@
 *** This project is a solution for the fansite-analytics-challenge which you can find it here:
 https://github.com/InsightDataScience/fansite-analytics-challenge
 You can also find the description for the challenge in challenge.MD file
-###################
+
 Author: Sina Faezi , sfaezi@uci.edu
 Date:   Apr/5/2017
-##################
 
 
 # Running the project: 
@@ -34,7 +33,7 @@ Maximum length of structures that has been used.
 
 -------------------------------
 
-#Algorithms and Data Structures for Features:
+# Algorithms and Data Structures for Features:
 
 ***
 n= number of lines ,  k=depends on the size of memory,
