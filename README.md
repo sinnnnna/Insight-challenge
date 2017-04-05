@@ -25,8 +25,8 @@ pip3 install numpy netaddr datetime
 - [[4],[3],[2],[1]] -> Parsing happens 4 time for each line -> lower memory
 - [[4,3],[2,1]] -> Parsing happens twice. -> something in between.
 
- ... Don't forget the brackets. They are part of input too.
- ... The order of numbers specifies the order of preforming each feature
+ ***Don't forget the brackets. They are part of input too.***
+ ***The order of numbers specifies the order of preforming each feature***
 
 5- Some insight about the performance of the program is given at end:
 Total execution time,
