@@ -41,7 +41,7 @@ Maximum length of structures that has been used.
 # Algorithms and Data Structures for Features:
 
 ***
-n= number of lines ,  k=depends on the size of memory,
+n= number of lines ,  k= The hashmap factor (depends on the size of memory),
 m= max number of access in 20 second. 
 ***
 
