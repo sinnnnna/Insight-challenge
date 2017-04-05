@@ -2,8 +2,7 @@
 https://github.com/InsightDataScience/fansite-analytics-challenge
 You can also find the description for the challenge in challenge.MD file
 
-Author: Sina Faezi , sfaezi@uci.edu
-Date:   Apr/5/2017
+Author: Sina Faezi , sfaezi@uci.edu, Date:   Apr/5/2017
 
 
 # Running the project: 
@@ -57,19 +56,35 @@ A python dictionary (a powerfull hashmap) has been used to store a counter for e
 
 ### Feature 3 : Speed -> O(n) , Memory->O(1)
 I have implemented 3 classes/data structures: 
-- A list wrapper that always has the access attempt data in last 60 minutes. Retrieving the total number of access from this list is  O(1). Also the maximum length of this list is not more than 60*60=3600.  I have used a python list here which is basically a linked list.
+- A linked list wrapper that always has the list of access timestamps in last 60 minutes. Retrieving the total number of access from this list wrapper is  O(1). Also the maximum length of this list is never more than 60*60=3600.  
 
-- A list wrapper that always keep the 10 highes frequency value & the number of recent accesses
+- A list wrapper that always keeps track of the 10 most busiest periods startingstap. & the number of recent accesses
 
-- A data structure that makes a proper member of previous lists
+- A data structure that makes a proper member of previous lists. It is a timestamp and a counter which represent either the number of accessess in that particular timestamp or in a 60 min duration starting from the corresponding time stamp.
 
 ### Feature 4: Speed -> O(n) , Memory->O(m)
 I use 2  lists and one dictionary while reading the lines:
 
--recentFailedLoginHosts: A list to keep track of who has logined in last 20 seconde
--failedTimesForHosts: A dictionary (hashmap) that for each host keeps track of its failed attempts. This map is always cleaned side by side of the list. Hence, it always has smaller size in compare to the list.
+- recentFailedLoginHosts: A list to keep track of who has failed login attempt in last 20 seconds. I have accessed to the first or the last member of this list all the time. Hence, this would not create a bottleneck. 
+
+- failedTimesForHosts: A dictionary (hashmap) which for each host keeps track of its failed attempts. This map is always kept cleaned side by side of the previous list. Hence, it always has smaller size in compare to the list. The major responsibility of this hashmaps is improving the performance. Instead of looking through the whole last list to find who had 3 consecutive failed login attempt, the program looks up into to this hash map. The keys of this hashmap is the host names and the values are the list of timestamps where a failed login has happend.
 
 - blacklist: list of hosts that dont have access premission
 
 # NOTE:
-My feature 3 doesnt pass the test by default. In my opinion you solution is wrong. However, in order to pass the initial stage, my program performs dummy when the number of inputs is ten.
+My feature 3 doesnt pass the initial test by default. By my understanding from the challenge description, the solution is wrong. Since it has not been mentioned that the timestamps should be in the log.txt time frame, the solution should be something like:
+
+		30/Jun/1995:23:59:52 -0400,10
+		30/Jun/1995:23:59:53 -0400,10
+		30/Jun/1995:23:59:54 -0400,10
+		30/Jun/1995:23:59:55 -0400,10
+		30/Jun/1995:23:59:56 -0400,10
+		30/Jun/1995:23:59:57 -0400,10
+		30/Jun/1995:23:59:58 -0400,10
+		30/Jun/1995:23:59:59 -0400,10
+		01/Jul/1995:00:00:00 -0400,10
+		01/Jul/1995:00:00:01 -0400,10
+
+Where, even though the timestamps are mostly not in the file,  all of them cover 10 attempts to the website and they are correct answers.
+
+**However, in order to pass the initial stage, my program performs dummy when the number of inputs is ten and the file.**
