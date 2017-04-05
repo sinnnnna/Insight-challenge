@@ -21,9 +21,9 @@ pip3 install numpy netaddr datetime
 
 4- You may edit the last argument passed to the code in order to manuplate the behavior of the program:
 
-[1,2,3,4]         -> Parsing happens only once for each line -> High speed for small files
-[[4],[3],[2],[1]] -> Parsing happens 4 time for each line -> lower memory
-[[4,3],[2,1]] -> Parsing happens twice. -> something in between.
+- [1,2,3,4]         -> Parsing happens only once for each line -> High speed for small files
+- [[4],[3],[2],[1]] -> Parsing happens 4 time for each line -> lower memory
+- [[4,3],[2,1]] -> Parsing happens twice. -> something in between.
 
  ... Don't forget the brackets. They are part of input too.
  ... The order of numbers specifies the order of preforming each feature
