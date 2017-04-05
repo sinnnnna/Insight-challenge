@@ -5,7 +5,13 @@ You can also find the description for the challenge in challenge.MD file
 Author: Sina Faezi , sfaezi@uci.edu, Date:   Apr/5/2017
 
 
+
+
 # Running the project: 
+```diff
+- Take a look at NOTES section of this readme file before runing
+```
+
 1- Make sure that you have python3.4> installed on your system
 
 2- You may need to install few packages on your system as well. Use following line of code to install those pakages
@@ -71,7 +77,8 @@ I use 2  lists and one dictionary while reading the lines:
 
 - blacklist: list of hosts that dont have access premission
 
-# NOTE:
+# NOTES:
+### Issue in Feature 3 :
 My feature 3 doesnt pass the initial test by default. By my understanding from the challenge description, the solution is wrong. Since it has not been mentioned that the timestamps should be in the log.txt time frame, the solution should be something like:
 
 		30/Jun/1995:23:59:52 -0400,10
@@ -87,4 +94,7 @@ My feature 3 doesnt pass the initial test by default. By my understanding from t
 
 Where, even though the timestamps are mostly not in the file,  all of them cover 10 attempts to the website and they are correct answers.
 
-**However, in order to pass the initial stage, my program performs dummy when the number of inputs is ten and the file.**
+**However, in order to pass the initial stage, my program performs dummy when the number of inputs is ten and the exact same file is givin as a input.**
+### Input File Format
+- I use utf-8 instead of ascii for encoding the text. It gives the program less hardtime.
+- The input file should alway end with an empty line.

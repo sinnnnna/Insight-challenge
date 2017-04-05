@@ -3,6 +3,7 @@ import functions
 from dataTypes import GlobalData, LocalData
 import sys
 import terminalsize
+import dummyByPass
 
 
 dir2LogFile='../log_input/log.txt'
@@ -29,14 +30,20 @@ num_lines = functions.countNumOfLines(open(dir2LogFile,encoding='utf-8',errors='
 terminal_size=terminalsize.get_terminal_size()[0]-10
 
 
-# Open the output files
-frequentHostsFile=open(dir2FrequentHostsFile,mode='w')
-highBWResourcesFile=open(dir2highBWResourcesFile,mode='w')
-bussiestHoursFile=open(dir2BussiestHoursFile,mode='w')
-blockedUserAttemptsFile=open(dir2BlockedUserAttemptsFile,mode='w')
+frequentHostsFile=None
+highBWResourcesFile=None
+bussiestHoursFile=None
+blockedUserAttemptsFile=None
 
 
 for ef in enabledFeatures:
+    # Open the output files
+    if 1 in ef : frequentHostsFile=open(dir2FrequentHostsFile,mode='w')
+    if 2 in ef : highBWResourcesFile=open(dir2highBWResourcesFile,mode='w')
+    if 3 in ef : bussiestHoursFile=open(dir2BussiestHoursFile,mode='w')
+    if 4 in ef : blockedUserAttemptsFile=open(dir2BlockedUserAttemptsFile,mode='w')
+    
+    
     # Creat an instance of GlobalData and local with the enabled fe
     gd=GlobalData(enabledFeatures=ef)
     ld=LocalData(blockedUserAttemptsFile,enabledFeatures=ef)
@@ -86,7 +93,7 @@ for ef in enabledFeatures:
     # close the corresiponding output file,
     # clear leftover data.
     if 1 in ef:
-        print('Feature 1 -','Memory info:')
+        print('\nFeature 1 -','Memory info:')
         print('Map size for Hosts: ', len(gd.hostAppearanceCntr),'\n')
         frequentHostsFile.writelines(gd.getTopTenHostWithHighesAccessNumberStr())
         frequentHostsFile.close()
@@ -114,3 +121,4 @@ for ef in enabledFeatures:
         blockedUserAttemptsFile.close()
         del ld
         
+dummyByPass.byPassInitialFeature3(dir2LogFile,dir2BussiestHoursFile)
