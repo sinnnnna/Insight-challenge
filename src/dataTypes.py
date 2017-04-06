@@ -503,16 +503,25 @@ class LocalData:
             self.blockedUserAttemptsFile.write(line+'\n')
             
     def _updateRecentlyLoginAttempts(self,h,t):
-        
+        """ Update the corresponding list and hashmap for recent login attempts
+            This function will keep list and maps clean, small, and uptodate.
+            
+            Parameters:
+            ----------
+            h,  str, host name
+            t, datetime, acc time
+        """
         
         # Add the attempt to the list of recent failed login attempt
         self.recentFailedLoginAttempts.append(LocalData.Client(h,t))
         
-        
+        # If the time has been change update the list by deleting the attempts 
+        # more than 20 sec ago
         while t-self.recentFailedLoginAttempts[0].lastSeenTryTime>LocalData.twentySecDelay:
             host=self.recentFailedLoginAttempts[0].name
             del self.recentFailedLoginAttempts[0]
         
+            # update the failiure map
             if host in self.faliureHistoryOfRecentHosts:
                 failedAttemptTimes=self.faliureHistoryOfRecentHosts[host]
                 for fat in failedAttemptTimes:
@@ -526,6 +535,27 @@ class LocalData:
                     
     
     def _checkAndAddToLogingFailsIfNeeded(self,host,t,req,reply,line):
+        """ First, check whether the host is in black list or not. If it is, 
+                    report the line and return
+            Second, React based on the access type; whether it is failed login, 
+                    successfull login, or it is none of them.
+                    
+            Third,  update data storage.
+            
+        
+        
+        Parameters
+        ----------
+        line:    str, (=None) -> input line. If the reset of the parameters 
+                                  are None, the data will be extracted from 
+                                  this line.
+            
+        host:    str, (=None)-> hostname or ip
+        req:     str, (=None) -> request 
+        reply:   str, (=None) -> reply code
+        t:       datatime, (=None)-> a datetime object of timeStr
+                    
+        """
         
         #Update Black List for current time
         while len(self.blackList)>0 and t-self.blackList[0].lastSeenTryTime> LocalData.fiveMinDelay:
@@ -541,7 +571,7 @@ class LocalData:
         # successfull login, or it is none of them
         loginFail=self.isLoginFail(req,reply) # May return True,False, or None
         if loginFail==True:
-                # Update the 
+                # Update the recenen
                 self._updateRecentlyLoginAttempts(host,t)
                 
                 # Update and add new history of failed attempt to the history 

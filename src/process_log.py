@@ -122,8 +122,8 @@ def main():
             
         if 4 in ef:
             print('Feature 4 -','Memory info:')
-            print('Max num of hosts in recent login request map: ',ld.failedTimesForHosts_maxLen)
-            print('Max num of hosts in last 20 seconds login failed list: ',ld.recentFailedLoginHosts_maxLen)
+            print('Max num of hosts in recent login request map: ',ld.faliureHistoryOfRecentHosts_maxLen)
+            print('Max num of hosts in last 20 seconds login failed list: ',ld.recentFailedLoginAttempts_maxLen)
             print('Max num of hosts in blacklist: ',ld.blackList_maxLen)
             # The output has been writen during processing the file
             blockedUserAttemptsFile.close()
