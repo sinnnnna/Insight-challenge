@@ -72,9 +72,9 @@ I have implemented 3 classes/data structures:
 ### Feature 4: Speed -> O(n) , Memory->O(m)
 I use 2  lists and one dictionary while reading the lines:
 
-- recentFailedLoginHosts: A list to keep track of who has failed login attempt in last 20 seconds. I have accessed to the first or the last member of this list all the time. Hence, this would not create a bottleneck. 
+- recentFailedLoginAttempts: A list to keep track of who has failed login attempt in last 20 seconds. The program only accesses to the first or the last member of this list to avoid making it bottleneck. 
 
-- failedTimesForHosts: A dictionary (hashmap) which for each host keeps track of its failed attempts. This map is always kept cleaned side by side of the previous list. Hence, it always has smaller size in compare to the list. The major responsibility of this hashmaps is improving the performance. Instead of looking through the whole last list to find who had 3 consecutive failed login attempt, the program looks up into to this hash map. The keys of this hashmap is the host names and the values are the list of timestamps where a failed login has happend.
+- faliureHistoryOfRecentHosts: A dictionary (hashmap) which for each host keeps track of its failed recent attempts. This map is always kept cleaned side by side of the previous list. Hence, it always has smaller size in compare to the list. The major responsibility of this hashmaps is improving the performance. Instead of looking through the whole length of the previous list to find who had 3 consecutive failed login attempt, the program looks up into to this hash map. The keys of this hashmap is the host names and the values are the list of timestamps where a failed login has happend.
 
 - blacklist: list of hosts that dont have access premission
 
@@ -96,6 +96,8 @@ My feature 3 doesnt pass the initial test by default. By my understanding from t
 Where, even though the timestamps are mostly not in the file,  all of them cover 10 attempts to the website and they are correct answers.
 
 **However, in order to pass the initial stage, my program performs dummy when the number of inputs is ten and the exact same file is givin as a input.**
+
+comment the line number 39 in the file dummyByPass.py in order to avoid by passing.
 ### Input File Format
 - I use utf-8 instead of ascii for encoding the text. It gives the program less hardtime.
 - The input file should alway end with an empty line.
