@@ -1,5 +1,6 @@
 *** This project is a solution for the fansite-analytics-challenge which you can find it here:
 https://github.com/InsightDataScience/fansite-analytics-challenge
+
 You can also find the description for the challenge in challenge.MD file
 
 Author: Sina Faezi , sfaezi@uci.edu, Date:   Apr/5/2017
@@ -9,30 +10,34 @@ Author: Sina Faezi , sfaezi@uci.edu, Date:   Apr/5/2017
 
 # Running the project: 
 ```diff
-- Take a look at NOTES section of this readme file before runing
+- Take a look at NOTES section of this README file before runing
 ```
 
 1- Make sure that you have python3.4> installed on your system
 
-2- You may need to install few packages on your system as well. Use following line of code to install those pakages
+2- You may need to install few packages on your system as well. Use following line of code to install those packages:
+***
 pip3 install numpy netaddr datetime 
+***
 
-3- The source code has been given the fashion that mentioned in the challenge description file. Use the "run.sh" file run the project
+3- The source code has been given the way that has be given in the challenge description file. Use the "run.sh" file to run the project
 
 4- You may edit the last argument passed to the code in order to manuplate the behavior of the program:
 
-- [1,2,3,4]         -> Parsing happens only once for each line -> High speed for small files
+- [[1,2,3,4]]         -> Parsing happens only once for each line -> High speed for small files
 - [[4],[3],[2],[1]] -> Parsing happens 4 time for each line -> lower memory
 - [[4,3],[2,1]] -> Parsing happens twice. -> something in between.
 
+ ***Putting Two number inside one set of brackets means that parsing will happens only once for those set of features***
  ***Don't forget the brackets. They are part of input too.***
- ***The order of numbers specifies the order of preforming each feature***
+ ***The order of numbers specifies the order of preforming each feature.***
+
 
 5- Some insight about the performance of the program is given at end:
-Total execution time,
-Total time for loading & parsing of file, 
-Total time for processing,
-Maximum length of structures that has been used.
+- Total execution time,
+- Total time for loading & parsing of file, 
+- Total time for processing,
+- Maximum length of structures that has been used.
 
 
 
@@ -50,29 +55,34 @@ Maximum length of structures that has been used.
 I read the file in chunks, so I wouldn't have memory problem.
 
 ### Feature 1 : Speed -> O(k*n) , Memory->O(n)
-A python dictionary (a powerfull hashmap) has been used to store a counter for each host/ip. I have used netaddr.IPAddress  classe to wrap the ips for better hashing them. The fact that ips have a certain format, may help a lot hashing.
+- A python dictionary (a powerfull hashmap) is used to store a counter for each host/ip.
+- I have used netaddr.IPAddress  classe to wrap the ips for better hashing of them. The fact that ips have a certain format, may help a lot hashing. 
+- Instead of sorting the final result, I get help from numpy library which returns the K highest value in O(n + K log(K)).
 
 *** This Feature might have memory issues for huge files
 
 
 ### Feature 2 : Speed -> O(k*n) , Memory->O(n)
-A python dictionary (a powerfull hashmap) has been used to store a counter for each resource of the website. Each counter is updated by the size of each file
+- A python dictionary (a powerfull hashmap) has been used to store a counter for each resource of the website. 
+- Each counter is updated by the size of each file.
+- Instead of sorting the final result, I get help from numpy library which returns the K highest value in O(n + K log(K)).
+
 
 *** This Feature might have memory issues for huge files
 
 
 ### Feature 3 : Speed -> O(n) , Memory->O(1)
-I have implemented 3 classes/data structures: 
-- A linked list wrapper that always has the list of access timestamps in last 60 minutes. Retrieving the total number of access from this list wrapper is  O(1). Also the maximum length of this list is never more than 60*60=3600.  
+I have implemented 3 classes/data structures for this feature: 
+- A linked list wrapper that always has the list of accesses timestamps in last 60 minutes. Retrieving time to get the total number of accesses from this wrapper is  O(1). Also the maximum length of this list is never more than 60*60=3600.  
 
-- A list wrapper that always keeps track of the 10 most busiest periods startingstap. & the number of recent accesses
+- A list wrapper that always keeps track of the 10 most busiest periods starting timestamps and also the number of accesses in last second. Max size of this embedded list is never more than 12.
 
-- A data structure that makes a proper member of previous lists. It is a timestamp and a counter which represent either the number of accessess in that particular timestamp or in a 60 min duration starting from the corresponding time stamp.
+- A data structure as a member of previous lists. It is a timestamp and a counter which represent either the number of accessess in that particular timestamp or in a 60 min duration starting from the corresponding time stamp depending of which list it has been used for.
 
 ### Feature 4: Speed -> O(n) , Memory->O(m)
 I use 2  lists and one dictionary while reading the lines:
 
-- recentFailedLoginAttempts: A list to keep track of who has failed login attempt in last 20 seconds. The program only accesses to the first or the last member of this list to avoid making it bottleneck. 
+- recentFailedLoginAttempts: A list to keep track of who has failed login attempt in last 20 seconds. The program only accesses to the first or the last member of this list to avoid making it a bottleneck. 
 
 - faliureHistoryOfRecentHosts: A dictionary (hashmap) which for each host keeps track of its failed recent attempts. This map is always kept cleaned side by side of the previous list. Hence, it always has smaller size in compare to the list. The major responsibility of this hashmaps is improving the performance. Instead of looking through the whole length of the previous list to find who had 3 consecutive failed login attempt, the program looks up into to this hash map. The keys of this hashmap is the host names and the values are the list of timestamps where a failed login has happend.
 
