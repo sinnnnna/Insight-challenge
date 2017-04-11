@@ -16,7 +16,7 @@ import re
 
 # Regex structures
 lineStructur= r'(.*) - - \[(\d\d/[A-Za-z]{3}/\d{4}:\d\d:\d\d:\d\d .*)\] \"(.*)\" (\d*) ([-0-9]*)'
-reqStructure='(\S*)\s+(.*)\s+(.*)'
+reqStructure='(\S*)\s+(\S*)' #'(\S*)\s+(.*)\s+(.*)'
 loginReqStructure= '(\S*)\s+/login .*'
 
 leftOver=''
