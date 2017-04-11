@@ -56,7 +56,7 @@ I read the file in chunks, so I wouldn't have memory problem.
 ### Feature 1 : Speed -> O(k*n) , Memory->O(n)
 - A python dictionary (a powerfull hashmap) is used to store a counter for each host/ip.
 - I have used netaddr.IPAddress  classe to wrap the ips for better hashing of them. The fact that ips have a certain format, may help a lot hashing. 
-- Instead of sorting the final result, I get help from numpy library which returns the K highest value in O(n + K log(K)).
+- Instead of sorting the final result, I get help from numpy library which returns the K highest value in O(n + K*log(K)).
 
 *** This Feature might have memory issues for huge files
 
