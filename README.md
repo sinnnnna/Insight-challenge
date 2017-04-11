@@ -16,9 +16,8 @@ Author: Sina Faezi , sfaezi@uci.edu, Date:   Apr/5/2017
 1- Make sure that you have python3.4> installed on your system
 
 2- You may need to install few packages on your system as well. Use following line of code to install those packages:
-***
-pip3 install numpy netaddr datetime 
-***
+
+		pip3 install numpy netaddr datetime 
 
 3- The source code has been given the way that has be given in the challenge description file. Use the "run.sh" file to run the project
 
