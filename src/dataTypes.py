@@ -9,7 +9,8 @@ import re
 from netaddr import IPAddress
 import datetime
 import functions
-from collections import defaultdict
+from collections import defaultdict,deque
+import heapq
 
 lineStructur= functions.lineStructur
 reqStructure=functions.reqStructure
@@ -317,7 +318,12 @@ class LocalData:
             return self.__str__()
         
         def __eq__(self, other):
+            if other == None:
+                return False
             return self.t== other.t
+        
+        def __gt__(self, other):
+            return self.cnt > other.cnt
 
     class ListOfAccessInLast60Min:
         """" A list to keep track keep track of frequency of attempts during 
@@ -326,9 +332,10 @@ class LocalData:
         The internal list size would never grow more 60*60
         """
         def  __init__ (self):
-            self.mainList=[]
+            self.mainList=deque(maxlen=LocalData.oneHour_len)
             self.totalNumOfAcc=0
-            
+            self.startPtr=0
+            self.endPtr=0
         def addAccess(self,t,isRealAcc=True):
             """ addes/updates a new/old access to the list
             
@@ -337,29 +344,60 @@ class LocalData:
                 int, totalNumOfAcc in last one hour after inserting the new
                 time to the list
             """
-            
+            #print(t)
             # If the access time has been inserted in the list alread, only increase 
             # the cnt for that time rather adding a new time to the list.
-            if len(self.mainList)>0 and t==self.mainList[-1].t:
-                self.mainList[-1].increaseCnt()
+            if not self.isMainListEmpty() and t==self.getLastAcc().t:
+                self.getLastAcc().increaseCnt()
             
             # If it is new time, add it to the list
             else: 
-                hm=LocalData.Acc_Time_Cnt(t,cnt=1*isRealAcc)
-                self.mainList.append(hm)
                 # Make sure that the lenght of the list always remains less 3600
-                if len(self.mainList)>LocalData.oneHour_len:
-                    self.totalNumOfAcc-=self.mainList[0].cnt
-                    del self.mainList[0]
-             
+                isMainListFull, firstMemberCnt= self.creatNewLastAcc(t,isRealAcc)
+                if isMainListFull:
+                    self.totalNumOfAcc-=firstMemberCnt
+                
+
             # increase the total number of accesses only if the access was a real one  
             self.totalNumOfAcc+= 1*isRealAcc
             return self.totalNumOfAcc
+        
+        def isMainListFull(self):
+            return len(self.mainList)==LocalData.oneHour_len   
+        def isMainListEmpty(self):
+            return len(self.mainList)==0
+
+        
+        def deleteFirstOne(self):
+            cnt=self.mainList.popleft().cnt
+
+            return cnt
             
         def getLastAcc(self):
-            return self.mainList[-1]
+           if self.isMainListEmpty():
+               return None
+           return self.mainList[-1]
+       
+        def creatNewLastAcc(self,t,isRealAcc):
+                        
+            
+            
+            isMainListFull=False
+            firstMemberCnt=None
+        
+
+            if self.isMainListFull():
+                isMainListFull=True
+                firstMemberCnt=self.mainList[0].cnt
+            
+            hm=LocalData.Acc_Time_Cnt(t,cnt=1*isRealAcc)
+            self.mainList.append(hm)
+            
+            return isMainListFull,firstMemberCnt
+       
         def hasAcc(self):
-            return len(self.mainList)>0
+            #return len(self.mainList)>0
+            return not self.isMainListEmpty()
                     
     class DynamicMaxTenValRecorder:
         """ This datastructure keeps track of the top 10 bussies hours.
@@ -374,8 +412,10 @@ class LocalData:
         """
         
         def  __init__ (self,numberOfBusyWindows=10):
-            self.mainList=[]
+            self.mainList=[]#SortedList()
+            self.lastMember=None#[]
             self.numberOfBusyWindows=numberOfBusyWindows
+            self.hasHeapifyedOnce=False
         def updateRecords(self,t,totalNumOfAccInLast60min):
             """ Main accesses point to this class object.
                 Gets new count for the given time and updates its data structure.
@@ -397,20 +437,29 @@ class LocalData:
             t_sixtyMinAgo=t-LocalData.sixtyMinDelay+LocalData.oneSecDelay
             
             # Lool atte algorithim
-            if len(self.mainList)>0 and self.mainList[-1].t== t_sixtyMinAgo:
-                self.mainList[-1].setCnt(totalNumOfAccInLast60min)
+            if self.lastMember == None:
+                self.lastMember=LocalData.Acc_Time_Cnt(t_sixtyMinAgo,totalNumOfAccInLast60min)
+            elif (self.lastMember.t== t_sixtyMinAgo):
+                self.lastMember.setCnt(totalNumOfAccInLast60min)
             else:
-                hm=LocalData.Acc_Time_Cnt(t_sixtyMinAgo,totalNumOfAccInLast60min)
-                self.mainList.append(hm)
-                if len(self.mainList)>self.numberOfBusyWindows+2:
-                    self.mainList.remove(min(self.mainList[0:-2],key=lambda x: x.cnt))
-                    
+                #self.mainList.add(self.lastMember)
+                if len(self.mainList)>self.numberOfBusyWindows:
+                    if self.hasHeapifyedOnce==False:
+                        heapq.heapify(self.mainList)
+                        self.hasHeapifyedOnce=True
+                    if (self.mainList[0]<self.lastMember):
+                        heapq.heappushpop(self.mainList,self.lastMember)
+                else:
+                    self.mainList.append(self.lastMember)
+                self.lastMember=LocalData.Acc_Time_Cnt(t_sixtyMinAgo,totalNumOfAccInLast60min)
                     
         def getExactTopTenRecordSorted(self):
             
             """ Remove extra windows and returns sorted windows according to 
                  traffic during each
             """
+            if self.lastMember !=None:
+                self.mainList.append(self.lastMember)
             while len(self.mainList)>self.numberOfBusyWindows:
                 self.mainList.remove(min(self.mainList,key=lambda x: x.cnt))
             return sorted(self.mainList,key=lambda x: x.cnt,reverse=True)
